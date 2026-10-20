@@ -1,0 +1,11 @@
+﻿pool=26                                mean=  5291.3  raw@130=   4321  raw@130=   6289  corr@130=   4296  corr@130=   6258   tmax= 4.6s
+pool=52                                mean=  5329.5  raw@130=   4411  raw@130=   6267  corr@130=   4392  corr@130=   6248   tmax= 4.0s
+pool=104                               mean=  5341.0  raw@130=   4434  raw@130=   6271  corr@130=   4415  corr@130=   6244   tmax= 7.0s
+shrink=0.5                             mean=  5370.2  raw@130=   4445  raw@130=   6322  corr@130=   4421  corr@130=   6293   tmax= 7.2s
+shrink=2.0                             mean=  5364.0  raw@130=   4456  raw@130=   6299  corr@130=   4431  corr@130=   6270   tmax= 6.5s
+shrink=4.0                             mean=  5360.2  raw@130=   4454  raw@130=   6289  corr@130=   4435  corr@130=   6262   tmax= 5.6s
+histpow=0.0                            mean=  5330.3  raw@130=   4215  raw@130=   6473  corr@130=   4190  corr@130=   6444   tmax= 6.0s
+histpow=1.0                            mean=  5852.5  raw@130=   5294  raw@130=   6420  corr@130=   5286  corr@130=   6409   tmax= 5.7s
+theta=0.0                              mean=  5408.5  raw@130=   4575  raw@130=   6264  corr@130=   4552  corr@130=   6243   tmax= 4.9s
+theta=1.0                              mean=  5316.7  raw@130=   4381  raw@130=   6282  corr@130=   4353  corr@130=   6250   tmax= 4.4s
+base                                   mean=  5341.0  raw@130=   4434  raw@130=   6271  corr@130=   4415  corr@130=   6244   tmax= 4.4s

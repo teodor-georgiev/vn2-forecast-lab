@@ -1,0 +1,16 @@
+cm=none            sw=0.0 scores=[4404, 6664] avg=5534
+cm=none            sw=0.3 scores=[4277, 6754] avg=5515
+cm=none            sw=0.5 scores=[4509, 7075] avg=5792
+cm=none            sw=0.7 scores=[4897, 7483] avg=6190
+cm=mean_all        sw=0.0 scores=[4405, 6654] avg=5530
+cm=mean_all        sw=0.3 scores=[4279, 6740] avg=5510
+cm=mean_all        sw=0.5 scores=[4515, 7058] avg=5786
+cm=mean_all        sw=0.7 scores=[4895, 7465] avg=6180
+cm=seasonal_mean   sw=0.0 scores=[4406, 6654] avg=5530
+cm=seasonal_mean   sw=0.3 scores=[4277, 6740] avg=5508
+cm=seasonal_mean   sw=0.5 scores=[4510, 7066] avg=5788
+cm=seasonal_mean   sw=0.7 scores=[4891, 7472] avg=6181
+cm=highq           sw=0.0 scores=[4406, 6654] avg=5530
+cm=highq           sw=0.3 scores=[4281, 6739] avg=5510
+cm=highq           sw=0.5 scores=[4514, 7067] avg=5790
+cm=highq           sw=0.7 scores=[4900, 7471] avg=6186

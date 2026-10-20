@@ -1,0 +1,37 @@
+--- base cuts=[70, 90, 105, 120, 135, 148]
+ref-ish q0.7           both     5310 zeros     5239 init     5382
+--- q x proj_w cuts=[70, 90, 105, 120, 135, 148]
+q0.6_pw0.6             both     5805 zeros     5658 init     5952
+q0.6_pw0.8             both     5512 zeros     5426 init     5599
+q0.6_pw1.0             both     5416 zeros     5377 init     5456
+q0.65_pw0.6            both     5611 zeros     5437 init     5785
+q0.65_pw0.8            both     5365 zeros     5267 init     5464
+q0.65_pw1.0            both     5307 zeros     5250 init     5364
+q0.7_pw0.6             both     5524 zeros     5350 init     5697
+q0.7_pw0.8             both     5319 zeros     5214 init     5425
+q0.7_pw1.0             both     5310 zeros     5239 init     5382
+q0.75_pw0.6            both     5411 zeros     5236 init     5585
+q0.75_pw0.8            both     5254 zeros     5142 init     5366
+q0.75_pw1.0            both     5303 zeros     5220 init     5386
+q0.8_pw0.6             both     5382 zeros     5216 init     5549
+q0.8_pw0.8             both     5295 zeros     5177 init     5413
+q0.8_pw1.0             both     5408 zeros     5311 init     5504
+--- level q_beta big cuts=[70, 90, 105, 120, 135, 148]
+lev_b6.0               both     7419 zeros     7419 init     7418
+lev_b8.0               both     7308 zeros     7317 init     7299
+lev_b12.0              both     7047 zeros     7072 init     7022
+lev_b20.0              both     6880 zeros     6932 init     6828
+--- L cuts=[70, 90, 105, 120, 135, 148]
+L8                     both     5331 zeros     5250 init     5412
+L10                    both     5314 zeros     5239 init     5389
+L13                    both     5310 zeros     5239 init     5382
+L18                    both     5316 zeros     5242 init     5389
+L26                    both     5303 zeros     5234 init     5372
+--- m_k cuts=[70, 90, 105, 120, 135, 148]
+m0.3                   both     5395 zeros     5335 init     5455
+m1.0                   both     5310 zeros     5239 init     5382
+m5.0                   both     5114 zeros     5017 init     5211
+--- seasonal power cuts=[70, 90, 105, 120, 135, 148]
+sp0.8                  both     5263 zeros     5189 init     5337
+sp1.0                  both     5310 zeros     5239 init     5382
+sp1.3                  both     5428 zeros     5354 init     5502

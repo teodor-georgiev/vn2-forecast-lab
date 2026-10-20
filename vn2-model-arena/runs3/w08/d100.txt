@@ -1,0 +1,10 @@
+﻿cutoff=100 truth=raw mult=1.0 score=3290
+  wk1: demand=    2176 ordered=    1567 hold=      0 short=   2176 (scored=n)
+  wk2: demand=    1899 ordered=    1689 hold=      0 short=   1899 (scored=n)
+  wk3: demand=    1786 ordered=    1403 hold=     70 short=    569 (scored=Y)
+  wk4: demand=    1731 ordered=    1489 hold=    125 short=    318 (scored=Y)
+  wk5: demand=    1769 ordered=    2077 hold=    136 short=    422 (scored=Y)
+  wk6: demand=    1517 ordered=    3294 hold=    176 short=    227 (scored=Y)
+  wk7: demand=    2030 ordered=       0 hold=    242 short=    283 (scored=Y)
+  wk8: demand=    2747 ordered=       0 hold=    413 short=    308 (scored=Y)
+  TOTAL scored hold=1163 short=2127 demand(w3-8)=11580 ordered=11519

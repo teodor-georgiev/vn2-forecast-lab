@@ -1,0 +1,15 @@
+{
+  "params": {
+    "scale": 1.0,
+    "buffer": 0.6,
+    "projection": 1.0,
+    "inflate": 1.0,
+    "shrink_k": 13,
+    "safety_mode": "std"
+  },
+  "mean_score": 5256.577789529934,
+  "scores": [
+    3920.9645659407224,
+    6592.191013119145
+  ]
+}

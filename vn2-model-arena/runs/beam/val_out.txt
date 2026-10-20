@@ -1,0 +1,15 @@
+trained 126.5549693107605
+horizon 1 148.7337725162506
+horizon 2 172.180499792099
+horizon 3 199.03631973266602
+horizon 4 224.8161392211914
+horizon 5 247.13386607170105
+horizon 6 270.2523732185364
+horizon 7 287.09632778167725
+horizon 8 302.98990392684937
+blend alpha(model)=0.0: score=4388.0
+blend alpha(model)=0.3: score=3928.6
+blend alpha(model)=0.5: score=3598.9
+blend alpha(model)=0.7: score=3309.5
+blend alpha(model)=1.0: score=3091.2
+time 303.115838766098

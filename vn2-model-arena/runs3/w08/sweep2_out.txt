@@ -1,0 +1,10 @@
+﻿base(sp1,ls13,p52,lw13)                3290     4480 | mean=    3885  tmax= 2.9s
+season_pow=0                           4174     6321 | mean=    5248  tmax= 2.4s
+season_pow=0.5                         3604     4339 | mean=    3971  tmax= 2.3s
+season_pow=1.5                         3335     6896 | mean=    5116  tmax= 2.5s
+ls26+lw8+th1                           3186     4494 | mean=    3840  tmax= 3.7s
+ls26+lw8+th1+sp0.7                     3386     4129 | mean=    3757  tmax= 2.3s
+ls39+lw8+th1                           3212     4483 | mean=    3847  tmax= 2.4s
+ls26+lw13+th1                          3234     4493 | mean=    3863  tmax= 2.3s
+ls26+lw8+th0                           3284     4488 | mean=    3886  tmax= 2.1s
+pool78+ls26+lw8                        3189     4497 | mean=    3843  tmax= 2.5s

@@ -1,0 +1,27 @@
+﻿initial state: on_hand sum=2216 arr1=0 arr2=1683
+
+truth=raw cutoff=100 zero-init: no-order=  11580 ref13=   5065  MINE=   3447  (hold=  1297 short=  2150) game time= 1.59s
+truth=raw cutoff=100 real-init: no-order=  10945 ref13=   5365  MINE=   3822  (hold=  1369 short=  2453) game time= 1.66s
+truth=raw cutoff=130 zero-init: no-order=  13711 ref13=   6638  MINE=   4070  (hold=  2382 short=  1687) game time= 1.60s
+truth=raw cutoff=130 real-init: no-order=  12797 ref13=   6789  MINE=   4269  (hold=  2522 short=  1747) game time= 1.71s
+truth=raw cutoff=140 zero-init: no-order=   9915 ref13=   4738  MINE=   3511  (hold=  1700 short=  1811) game time= 1.52s
+truth=raw cutoff=140 real-init: no-order=   9560 ref13=   4809  MINE=   3495  (hold=  1750 short=  1745) game time= 1.46s
+truth=raw cutoff=149 zero-init: no-order=   8836 ref13=   4320  MINE=   2741  (hold=  1496 short=  1244) game time= 1.51s
+truth=raw cutoff=149 real-init: no-order=   8068 ref13=   4530  MINE=   3008  (hold=  1671 short=  1337) game time= 1.60s
+
+truth=corr cutoff=100 zero-init: no-order=  11659 ref13=   5017  MINE=   3422  (hold=  1275 short=  2147) game time= 1.54s
+truth=corr cutoff=100 real-init: no-order=  11034 ref13=   5299  MINE=   3803  (hold=  1344 short=  2459) game time= 1.57s
+truth=corr cutoff=130 zero-init: no-order=  13835 ref13=   6600  MINE=   4038  (hold=  2355 short=  1683) game time= 1.50s
+truth=corr cutoff=130 real-init: no-order=  12938 ref13=   6744  MINE=   4236  (hold=  2486 short=  1750) game time= 1.52s
+truth=corr cutoff=140 zero-init: no-order=  10015 ref13=   4690  MINE=   3489  (hold=  1664 short=  1825) game time= 1.51s
+truth=corr cutoff=140 real-init: no-order=   9680 ref13=   4749  MINE=   3466  (hold=  1700 short=  1766) game time= 1.47s
+truth=corr cutoff=149 zero-init: no-order=   8862 ref13=   4309  MINE=   2733  (hold=  1486 short=  1247) game time= 1.60s
+truth=corr cutoff=149 real-init: no-order=   8097 ref13=   4514  MINE=   2998  (hold=  1658 short=  1340) game time= 1.69s
+
+  week 0: ordered=     1817 units
+  week 1: ordered=      318 units
+  week 2: ordered=        4 units
+  week 3: ordered=        1 units
+  week 4: ordered=        0 units
+  week 5: ordered=        0 units
+REAL-GAME wall time (model build + 6 decisions): 1.48s

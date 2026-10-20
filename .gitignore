@@ -1,0 +1,14 @@
+# local tooling caches
+.ruff_cache/
+.playwright-mcp/
+__pycache__/
+*.py[cod]
+
+# OS noise
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# virtualenvs
+.venv/
+venv/

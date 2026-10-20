@@ -1,0 +1,20 @@
+agent,score,holding,shortage,ordered,decide_seconds,failures
+w12,3981.9285717536136,2262.1026614480093,1719.8259103056043,9992,0.37,
+w02,4049.1693864390627,2265.040888311565,1784.1284981274976,10615,0.8,
+w10,4549.978536616303,2850.7040864847972,1699.2744501315055,10948,0.33,
+w03,4888.931691125371,2023.339459099956,2865.592232025415,8752,0.42,
+w09,4934.394295610637,2403.769750765115,2530.6245448455215,9712,0.03,
+w11,5122.903307229504,3052.1808491390575,2070.722458090447,11182,0.3,
+CONSENSUS_trimmed_all,6136.428131304622,1281.156854080989,4855.271277223634,5812,0.0,
+CONSENSUS_mean_all,6139.71334209133,1785.9403035278247,4353.773038563505,7056,0.0,
+w15,6596.689541238323,2043.9582028999553,4552.731338338368,7973,0.0,
+CONSENSUS_median_all,6708.600391961485,902.2210227996484,5806.379369161837,4088,0.0,
+w07,7135.310745294169,1153.7769309680536,5981.533814326115,3729,2.33,"week 2: ValueError: operands could not be broadcast together with shapes (599,) (2,) ; week 3: ValueError: operands could not be broadcast together with shapes (599,) (3,) ; week 4: ValueError: operands could not be broadcast together with shapes (599,) (4,) ; week 5: ValueError: operands could not be broadcast together with shapes (599,) (5,) "
+w06,7189.345570616126,1000.8006760415435,6188.544894574583,3755,0.16,
+w17,8720.08783926893,6609.340392508396,2110.7474467605352,14904,0.36,
+w05,9499.137187386194,652.4635554321856,8846.673631954007,853,0.38,"week 0: ValueError: operands could not be broadcast together with shapes (599,) (0,) ; week 2: ValueError: operands could not be broadcast together with shapes (599,) (2,) ; week 3: ValueError: operands could not be broadcast together with shapes (599,) (3,) ; week 4: ValueError: operands could not be broadcast together with shapes (599,) (4,) ; week 5: ValueError: operands could not be broadcast together with shapes (599,) (5,) "
+w13,9501.369036301114,652.6954043471069,8848.673631954007,851,0.01,"week 2: ValueError: operands could not be broadcast together with shapes (599,13) (2,13) () ; week 3: ValueError: operands could not be broadcast together with shapes (599,13) (3,13) () ; week 4: ValueError: operands could not be broadcast together with shapes (599,13) (4,13) () ; week 5: ValueError: operands could not be broadcast together with shapes (599,13) (5,13) () "
+w20,9889.543906127587,349.3347508401796,9540.209155287408,0,0.0,
+w08,9889.543906127587,349.3347508401796,9540.209155287408,0,1.4,
+w01,11029.278802579009,6463.246477330402,4566.032325248607,15934,14.84,
+w18,11836.502206635998,3501.2903177167846,8335.211888919212,3710,0.36,"week 2: ValueError: operands could not be broadcast together with shapes (2,) (599,) ; week 3: ValueError: operands could not be broadcast together with shapes (3,) (599,) ; week 4: ValueError: operands could not be broadcast together with shapes (4,) (599,) ; week 5: ValueError: operands could not be broadcast together with shapes (5,) (599,) "

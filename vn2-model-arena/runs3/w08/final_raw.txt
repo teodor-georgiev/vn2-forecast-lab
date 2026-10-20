@@ -1,0 +1,19 @@
+﻿
+truth=raw cutoff=100 zero-init: no-order=  11580 ref13=   5065  MINE=   3464  (hold=  1264 short=  2200) game time= 
+1.46s
+truth=raw cutoff=100 real-init: no-order=  10945 ref13=   5365  MINE=   3831  (hold=  1337 short=  2494) game time= 
+1.43s
+truth=raw cutoff=130 zero-init: no-order=  13711 ref13=   6638  MINE=   4069  (hold=  2383 short=  1686) game time= 
+1.45s
+truth=raw cutoff=130 real-init: no-order=  12797 ref13=   6789  MINE=   4267  (hold=  2523 short=  1744) game time= 
+1.56s
+truth=raw cutoff=140 zero-init: no-order=   9915 ref13=   4738  MINE=   3510  (hold=  1700 short=  1810) game time= 
+1.45s
+truth=raw cutoff=140 real-init: no-order=   9560 ref13=   4809  MINE=   3495  (hold=  1750 short=  1745) game time= 
+1.44s
+truth=raw cutoff=149 zero-init: no-order=   8836 ref13=   4320  MINE=   2740  (hold=  1494 short=  1246) game time= 
+1.44s
+truth=raw cutoff=149 real-init: no-order=   8068 ref13=   4530  MINE=   3006  (hold=  1669 short=  1338) game time= 
+1.69s
+
+
