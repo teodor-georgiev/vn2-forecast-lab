@@ -105,6 +105,44 @@ def test_pack_invalid_input_raises():
         raise AssertionError("negative n_scenarios must raise ValueError")
 
 
+def test_pack_piecewise_constant_step_draws():
+    """Draws are grid quantiles only, never interpolated (brief)."""
+    q = np.zeros((2, 3, 4))
+    spreads = np.array([10.0, 20.0, 30.0, 40.0])
+    for h in range(3):
+        q[:, h, :] = spreads[None, :]
+    out = pack_scenarios(q, 256, seed=13)
+    assert np.all(np.isin(out, spreads)), sorted(set(out.ravel().tolist()))
+    # Two-point grid: only endpoints, no blended middle values.
+    q2 = np.zeros((1, 3, 2))
+    q2[:, :, 0] = 0.0
+    q2[:, :, 1] = 100.0
+    out2 = pack_scenarios(q2, 256, seed=14)
+    assert np.all(np.isin(out2, [0.0, 100.0]))
+    assert np.any(out2 == 0.0) and np.any(out2 == 100.0)
+
+
+def test_pack_n_taus_zero_raises():
+    try:
+        pack_scenarios(np.ones((2, 3, 0)), 4, seed=1)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("n_taus == 0 must raise ValueError")
+
+
+def test_pack_nonfinite_rejected():
+    for bad in (np.inf, -np.inf, np.nan):
+        q = _q(2)
+        q[0, 0, 0] = bad
+        try:
+            pack_scenarios(q, 4, seed=1)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError(f"non-finite quantile {bad!r} must raise ValueError")
+
+
 def test_pack_integration_quantile_forecast():
     from vn2_from_scratch.quantiles import quantile_forecast
 

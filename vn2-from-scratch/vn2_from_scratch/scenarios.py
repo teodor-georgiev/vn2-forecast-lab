@@ -5,11 +5,12 @@ shape (n_series, 3, n_taus), monotone in tau and non-negative — and
 produces demand scenarios of shape (n_scenarios, n_series, 3).
 
 Method (per series, per horizon): the tau-grid points define an empirical
-CDF; a uniform draw ``U`` is inverted through the piecewise-linear
-interpolant of those points (inverse CDF). Draws below the smallest tau
-take the smallest quantile (flat extrapolation) and draws above the
-largest tau take the largest quantile, so every scenario is finite and
-bounded by the supplied quantile range.
+CDF; a uniform draw ``U`` is inverted through the piecewise-constant
+step function of those points (inverse CDF): ``U <= tau[0]`` maps to
+``q[0]``, ``tau[k-1] < U <= tau[k]`` maps to ``q[k]`` and ``U > tau[-1]``
+maps to ``q[-1]`` (flat extrapolation). Draws therefore always equal one
+of the supplied grid quantiles -- no interpolation between grid points --
+and lie in ``[q_min, q_max]`` for that series/horizon.
 
 Cross-week dependence: exactly **one uniform per series-scenario** is
 drawn — shape (n_scenarios, n_series) — and the same ``U`` is inverted
@@ -36,11 +37,18 @@ N_HORIZONS = 3
 def _resolve_taus(n_taus: int, taus) -> np.ndarray:
     """Tau grid for ``n_taus`` grid points.
 
-    Without an explicit grid, the default four-point grid is
-    ``DEFAULT_TAUS`` (matching ``quantile_forecast``); a single point is
-    0.5; any other count uses the equal-probability empirical grid
-    1/(k+1), 2/(k+1), ..., k/(k+1).
+    Explicit ``taus`` (length ``n_taus``) always wins and is validated.
+    Without it, the default grid is only defined for the
+    ``quantile_forecast`` default: ``n_taus == len(DEFAULT_TAUS)`` uses
+    ``DEFAULT_TAUS``, and ``n_taus == 1`` uses ``(0.5,)``. Any other
+    ``n_taus`` falls back to the equal-probability grid
+    ``1/(k+1), 2/(k+1), ..., k/(k+1)`` -- this is a documented assumption,
+    not the caller's true taus, so callers with non-default tau counts
+    (e.g. ``quantile_forecast(taus=...)`` with 2 levels) must pass
+    ``taus=`` explicitly for an exact grid. ``n_taus == 0`` is rejected.
     """
+    if n_taus == 0:
+        raise ValueError("quantiles must have n_taus >= 1, got 0")
     if taus is not None:
         arr = np.asarray(tuple(taus), dtype=np.float64).ravel()
         if arr.size != n_taus:
@@ -60,29 +68,21 @@ def _resolve_taus(n_taus: int, taus) -> np.ndarray:
 
 
 def _invert_cdf(uniforms: np.ndarray, taus: np.ndarray, q_h: np.ndarray) -> np.ndarray:
-    """Piecewise-linear CDF inversion for one horizon.
+    """Piecewise-constant CDF inversion (step) for one horizon.
 
     ``uniforms`` is (n_scenarios, n_series); ``q_h`` is (n_series, n_taus)
-    monotone non-decreasing in tau. Returns (n_scenarios, n_series).
+    monotone non-decreasing in tau. Returns (n_scenarios, n_series) with
+    every draw equal to a grid quantile: ``idx = searchsorted(taus, U,
+    side="left")`` picks the first tau ``>= U`` (clamped to the last grid
+    point when ``U`` exceeds ``taus[-1]``).
     """
     if q_h.shape[1] == 1:
         return np.broadcast_to(q_h[:, 0][None, :], uniforms.shape).copy()
-    idx = np.clip(np.searchsorted(taus, uniforms), 1, taus.size - 1)  # (S, N)
+    idx = np.clip(
+        np.searchsorted(taus, uniforms, side="left"), 0, taus.size - 1
+    )  # (S, N)
     series_idx = np.arange(q_h.shape[0])[None, :]
-    left_tau = taus[idx - 1]
-    right_tau = taus[idx]
-    left_q = q_h[series_idx, idx - 1]
-    right_q = q_h[series_idx, idx]
-    denom = right_tau - left_tau
-    frac = np.where(
-        denom > 0.0,
-        (uniforms - left_tau) / np.where(denom > 0.0, denom, 1.0),
-        0.0,
-    )
-    out = left_q + frac * (right_q - left_q)
-    out = np.where(uniforms <= taus[0], q_h[:, 0][None, :], out)
-    out = np.where(uniforms >= taus[-1], q_h[:, -1][None, :], out)
-    return out
+    return q_h[series_idx, idx].copy()
 
 
 def pack_scenarios(quantiles, n_scenarios, seed, taus=None) -> np.ndarray:
@@ -91,8 +91,12 @@ def pack_scenarios(quantiles, n_scenarios, seed, taus=None) -> np.ndarray:
     ``quantiles`` is (n_series, 3, n_taus) as returned by
     ``quantile_forecast``. Returns (n_scenarios, n_series, 3), finite and
     non-negative. ``seed`` seeds ``numpy.random.default_rng`` so the same
-    seed reproduces byte-identical draws. ``taus`` optionally supplies
-    the tau grid; see :func:`_resolve_taus` for the default.
+    seed reproduces byte-identical draws. ``taus`` optionally supplies the
+    tau grid (length ``n_taus``, in [0, 1], strictly increasing); it is
+    required for an exact grid whenever ``n_taus`` is not 1 or
+    ``len(DEFAULT_TAUS)`` -- otherwise an equal-probability fallback grid
+    is assumed, see :func:`_resolve_taus`. Non-finite quantiles are
+    rejected with ``ValueError`` rather than silently zeroed.
     """
     try:
         n_scenarios = operator.index(n_scenarios)
@@ -111,11 +115,15 @@ def pack_scenarios(quantiles, n_scenarios, seed, taus=None) -> np.ndarray:
             f"quantiles must have shape (n_series, 3, n_taus), got {q.shape}"
         )
     n_series, _, n_taus = q.shape
+    if n_taus == 0:
+        raise ValueError(
+            f"quantiles must have shape (n_series, 3, n_taus) with n_taus >= 1, got {q.shape}"
+        )
     taus_arr = _resolve_taus(n_taus, taus)
-    # Sanitise: finite, non-negative, monotone in tau (input from
-    # quantile_forecast already is; enforce so arbitrary inputs cannot
-    # produce non-finite or negative scenarios).
-    q = np.nan_to_num(q, nan=0.0, posinf=0.0, neginf=0.0)
+    if not np.all(np.isfinite(q)):
+        raise ValueError("quantiles must be finite, got NaN or +/-inf")
+    # Sanitise: non-negative, monotone in tau (quantile_forecast output
+    # already is; enforce so negative inputs stay non-negative).
     q = np.clip(q, 0.0, None)
     q = np.maximum.accumulate(q, axis=2)
     if n_scenarios == 0 or n_series == 0:
@@ -128,5 +136,5 @@ def pack_scenarios(quantiles, n_scenarios, seed, taus=None) -> np.ndarray:
     out = np.empty((n_scenarios, n_series, N_HORIZONS), dtype=np.float64)
     for h in range(N_HORIZONS):
         out[:, :, h] = _invert_cdf(uniforms, taus_arr, q[:, h, :])
-    out = np.clip(np.nan_to_num(out, nan=0.0, posinf=0.0, neginf=0.0), 0.0, None)
+    out = np.clip(out, 0.0, None)
     return out
