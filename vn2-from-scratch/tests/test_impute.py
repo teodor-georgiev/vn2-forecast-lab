@@ -80,6 +80,31 @@ def test_impute_non_finite_and_negative_observed_are_sanitised():
     assert (out >= 0).all()
 
 
+def test_impute_negative_history_is_unobserved_not_zero():
+    # A negative history value must be treated as unobserved, never as an
+    # observed 0.0 that LOCF then propagates.
+    # Negative between observed values: LOCF from the prior observed week.
+    hist = np.array([[5.0, -1.0, 2.0]])
+    stock = np.array([[True, True, True]])
+    out = impute_panel(hist, stock, 3)
+    np.testing.assert_array_equal(out, [[5.0, 5.0, 2.0]])
+
+    # Negative followed by a censored week: the censored week must forward
+    # from the last genuine observed value, not from a clipped 0.0.
+    hist = np.array([[4.0, -3.0, 99.0]])
+    stock = np.array([[True, True, False]])
+    out = impute_panel(hist, stock, 3)
+    np.testing.assert_array_equal(out, [[4.0, 4.0, 4.0]])
+    assert not (out == 0.0).any(), "negative must not become an observed zero"
+
+    # Leading negative with no prior observed: fallback (cross-series
+    # median of observed means; here the single series' mean 3.0), not 0.0.
+    hist = np.array([[-5.0, 3.0]])
+    stock = np.array([[True, True]])
+    out = impute_panel(hist, stock, 2)
+    np.testing.assert_array_equal(out, [[3.0, 3.0]])
+
+
 def test_impute_upto_zero_edge():
     # Empty window: nothing to fill from; input is returned unchanged.
     hist = np.array([[1.0, 2.0], [3.0, 4.0]])

@@ -21,13 +21,15 @@ Guarantees (for inputs honouring the data contract: finite, non-negative
   also resolve to that same finite value.
 
 Edge cases: ``upto == 0`` (empty window) leaves the panel unchanged, and if
-no series has any observed week the median fallback is ``0.0`` — the output
+no series has any observed week the median fallback is ``0.0`` - the output
 is still finite. Non-finite or negative history values inside the window
-are treated as unobserved (and clipped to zero), so they can never
-propagate a negative or non-finite fill downstream.
+are treated as unobserved, so they can never propagate a negative or
+non-finite fill downstream.
 """
 
 from __future__ import annotations
+
+import operator
 
 import numpy as np
 
@@ -46,6 +48,13 @@ def impute_panel(history: np.ndarray, in_stock: np.ndarray, upto: int) -> np.nda
         raise ValueError(
             f"shape mismatch: history {hist.shape} vs in_stock {stock.shape}"
         )
+    try:
+        upto = operator.index(upto)
+    except TypeError:
+        if isinstance(upto, float) and upto.is_integer():
+            upto = int(upto)
+        else:
+            raise TypeError(f"upto must be an integer, got {upto!r}") from None
     n_series, n_weeks = hist.shape
     if not 0 <= upto <= n_weeks:
         raise ValueError(f"upto={upto} outside [0, {n_weeks}]")
@@ -56,12 +65,11 @@ def impute_panel(history: np.ndarray, in_stock: np.ndarray, upto: int) -> np.nda
     hist_w = hist[:, :upto]
     stock_w = stock[:, :upto]
 
-    # Observed = in stock and finite; negative literals are clipped to zero
-    # so fills can never go negative.
-    observed = stock_w & np.isfinite(hist_w)
-    values = np.where(
-        observed, np.maximum(np.where(np.isfinite(hist_w), hist_w, 0.0), 0.0), np.nan
-    )
+    # Observed = in stock, finite, and non-negative. Negative or
+    # non-finite history values are unobserved demand: they must not
+    # become an observed zero (via clipping) and propagate via LOCF.
+    observed = stock_w & np.isfinite(hist_w) & (hist_w >= 0)
+    values = np.where(observed, hist_w, np.nan)
 
     # Cross-series median of censored means (per-series observed means).
     counts = observed.sum(axis=1)
