@@ -98,6 +98,6 @@ def best_of(
         score = mc_score(cand, scenarios, on_hand0, pipe_w1, pipe_w2)
         if score < best_score:
             best_score = score
-            best_orders = np.asarray(cand, dtype=np.float64)
+            best_orders = np.array(cand, dtype=np.float64, copy=True)
     assert best_orders is not None  # cands non-empty, so the loop ran
     return best_orders, float(best_score)

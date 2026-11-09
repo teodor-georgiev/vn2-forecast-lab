@@ -93,6 +93,18 @@ def test_best_of_returns_min_candidate():
         assert best_score <= mc_score(cand, sc, zeros, zeros, zeros)
 
 
+def test_best_of_result_is_copy_not_alias():
+    sc = np.ones((5, 4, 8)) * 6.0
+    zeros = np.zeros(4)
+    moderate = np.full((6, 4), 6.0)
+
+    best_orders, _ = best_of([moderate], sc, zeros, zeros, zeros)
+    assert best_orders is not moderate
+    expected = moderate.copy()
+    moderate[:] = -999.0  # caller mutates original candidate
+    np.testing.assert_array_equal(best_orders, expected)
+
+
 def test_best_of_empty_raises():
     with pytest.raises(ValueError):
         best_of([], np.ones((2, 4, 8)), np.zeros(4), np.zeros(4), np.zeros(4))
