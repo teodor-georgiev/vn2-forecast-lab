@@ -1,6 +1,7 @@
 name: job
 
-# Fire one command on a throwaway runner: gh workflow run job -f command="..." -f working_directory="vn2-from-scratch"
+# Fire one command on a throwaway runner:
+#   gh workflow run job -f command="..." -f working_directory="vn2-from-scratch"
 on:
   workflow_dispatch:
     inputs:
@@ -28,11 +29,12 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
+          cache-dependency-path: vn2-from-scratch/requirements.txt
 
       - name: install
         run: |
           python -m pip install --upgrade pip
-          pip install numpy pandas scipy scikit-learn lightgbm pytest
+          pip install -r vn2-from-scratch/requirements.txt
 
       - name: run
         working-directory: ${{ inputs.working_directory }}
