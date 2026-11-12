@@ -1,0 +1,29 @@
+{
+  "validity": "retrospective competition replay",
+  "warning": "Game weeks 1-8 labels were published before this project. NOT blind, NOT official.",
+  "total_cost": 4812.8,
+  "scored_cost": 3899.0,
+  "scored_holding": 2510.0,
+  "scored_shortage": 1389.0,
+  "fill_rate_scored": 0.8679,
+  "weekly_total": [
+    380.6,
+    533.2,
+    677.8,
+    848.8,
+    736.2,
+    563.4,
+    537.8,
+    535.0
+  ],
+  "organizer_benchmark_scored": 4334.0,
+  "submission_files": [
+    "C:\\Users\\Toni\\Documents\\Default Project\\vn2-from-scratch\\submissions\\submission_round_1.csv",
+    "C:\\Users\\Toni\\Documents\\Default Project\\vn2-from-scratch\\submissions\\submission_round_2.csv",
+    "C:\\Users\\Toni\\Documents\\Default Project\\vn2-from-scratch\\submissions\\submission_round_3.csv",
+    "C:\\Users\\Toni\\Documents\\Default Project\\vn2-from-scratch\\submissions\\submission_round_4.csv",
+    "C:\\Users\\Toni\\Documents\\Default Project\\vn2-from-scratch\\submissions\\submission_round_5.csv",
+    "C:\\Users\\Toni\\Documents\\Default Project\\vn2-from-scratch\\submissions\\submission_round_6.csv"
+  ],
+  "elapsed_s": 68.8
+}
