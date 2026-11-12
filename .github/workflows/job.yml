@@ -1,0 +1,52 @@
+name: job
+
+# Fire one command on a throwaway runner: gh workflow run job -f command="..." -f working_directory="vn2-from-scratch"
+on:
+  workflow_dispatch:
+    inputs:
+      command:
+        description: Shell command to run
+        required: true
+        default: python -c "print('hello from a runner')"
+      working_directory:
+        description: Directory to run it in
+        required: false
+        default: .
+      timeout_minutes:
+        description: Job timeout in minutes (1-300)
+        required: false
+        default: "30"
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ fromJSON(inputs.timeout_minutes) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: install
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy pandas scipy scikit-learn lightgbm pytest
+
+      - name: run
+        working-directory: ${{ inputs.working_directory }}
+        run: ${{ inputs.command }}
+
+      - name: upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: run-output
+          path: |
+            **/*.csv
+            **/*.json
+            **/*.log
+            **/*.png
+          if-no-files-found: ignore
+          retention-days: 7
