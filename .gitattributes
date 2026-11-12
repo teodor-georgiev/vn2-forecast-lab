@@ -1,0 +1,3 @@
+# Keep every byte exactly as it is on disk: the data-loading tests verify
+# SHA-256 hashes of the raw CSVs, so any EOL conversion breaks them.
+* -text
