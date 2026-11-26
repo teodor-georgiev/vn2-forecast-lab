@@ -43,17 +43,20 @@ from .data import load_dataset
 from .forecast import blend, fit_lgbm, lgbm_forecast, seasonal_forecast
 from .organizer import full_panel, nanmean_rows, run_organizer_benchmark
 from .policy import deficit_order
+from .progress import Progress
 from .simulator import simulate
 from .submit import write_rounds
 
 VALIDITY = "retrospective competition replay"
 
 
-def cache_forecasts(y_cens, woy, seasonal_weight, origins, use_lgbm=True):
+def cache_forecasts(y_cens, woy, seasonal_weight, origins, use_lgbm=True, progress=None):
     """Fit once per origin, then cache the forecast seen at each decision."""
     observed = np.isfinite(y_cens)
     cache: dict[int, dict[int, np.ndarray]] = {}
-    for origin in origins:
+    for index, origin in enumerate(origins):
+        if progress:
+            progress.update("forecast_folds", index, len(origins), origin=int(origin), seasonal_weight=seasonal_weight)
         models = fit_lgbm(y_cens, observed, origin) if use_lgbm else None
         per_t = {}
         for t in range(N_DECISIONS):
@@ -69,6 +72,8 @@ def cache_forecasts(y_cens, woy, seasonal_weight, origins, use_lgbm=True):
                 )
             )
         cache[origin] = per_t
+        if progress:
+            progress.update("forecast_folds", index + 1, len(origins), origin=int(origin), seasonal_weight=seasonal_weight)
     return cache
 
 
@@ -156,7 +161,11 @@ def game_orders(y_cens, woy, seasonal_weight, coverage, buffer_coef):
 
 def main(out_dir: str | Path | None = None, seasonal_weights=(1.0, 0.7, 0.4)):
     out_dir = Path(out_dir or ARTIFACTS_DIR)
-    out_dir.mkdir(parents=True, exist_ok=True)
+    with Progress(out_dir / "progress.json") as progress:
+        return _run(out_dir, seasonal_weights, progress)
+
+
+def _run(out_dir, seasonal_weights, progress):
     t0 = time.time()
 
     ds = load_dataset()
@@ -166,14 +175,18 @@ def main(out_dir: str | Path | None = None, seasonal_weights=(1.0, 0.7, 0.4)):
     _, bench = run_organizer_benchmark(ds)
 
     rows = []
+    total = len(seasonal_weights) * 20
     for sw in seasonal_weights:
-        cache = cache_forecasts(y_cens, woy, sw, CV_ORIGINS)
+        cache = cache_forecasts(y_cens, woy, sw, CV_ORIGINS, progress=progress)
         for cov, buf in itertools.product(
             (0.9, 1.0, 1.1, 1.2, 1.3), (0.0, 0.15, 0.3, 0.45)
         ):
             rows.append(
                 eval_policy(y_raw, y_cens, cache, cov, buf) | {"seasonal_weight": sw}
             )
+            progress.update("policy_sweep", len(rows), total, seasonal_weight=sw,
+                            latest_cv_cost=rows[-1]["robust"],
+                            best_cv_cost=min(row["robust"] for row in rows))
 
     rows.sort(key=lambda r: r["robust"])
     best = rows[0]
@@ -197,6 +210,7 @@ def main(out_dir: str | Path | None = None, seasonal_weights=(1.0, 0.7, 0.4)):
     }
     (out_dir / "frozen_config.json").write_text(json.dumps(frozen, indent=2))
 
+    progress.update("replay", 0, 1, best_cv_cost=best["robust"])
     orders, ds = game_orders(
         y_cens, woy, best["seasonal_weight"], best["coverage"], best["buffer_coef"]
     )
@@ -268,6 +282,9 @@ def main(out_dir: str | Path | None = None, seasonal_weights=(1.0, 0.7, 0.4)):
         ]
     )
     (REPORTS_DIR / "RESULTS.md").write_text("\n".join(md) + "\n")
+    progress.update("replay", 1, 1, cost=replay["scored_cost"],
+                    holding=replay["scored_holding"], lost=replay["scored_shortage"],
+                    fill_rate=replay["fill_rate_scored"], best_cv_cost=best["robust"])
     return frozen, replay
 
 
