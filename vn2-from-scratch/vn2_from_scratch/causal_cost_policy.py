@@ -12,7 +12,7 @@ def project_order(on_hand, arrivals_now, arrivals_next, forecast, sigma, z, mult
     fc=np.maximum(np.asarray(forecast,float),0)
     end1=np.maximum(0,on_hand+arrivals_now-fc[:,0])
     end2=np.maximum(0,end1+arrivals_next-fc[:,1])
-    target=np.maximum(0,multiplier*fc[:,2]+z*np.maximum(sigma,0))
+    target=np.maximum(0,multiplier*(fc[:,2]+z*np.maximum(sigma,0)))
     return np.maximum(0,np.rint(target-end2))
 
 def causal_rollout(demand, opening, decide):
