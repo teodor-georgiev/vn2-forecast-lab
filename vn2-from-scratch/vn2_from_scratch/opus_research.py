@@ -13,14 +13,14 @@ import numpy as np
 from catboost import CatBoostRegressor
 from lightgbm import LGBMRegressor
 from . import ensemble_sweep as old
-from .hierarchical_research import Hierarchy, scenarios, forecast_stats, aggregate
+from .hierarchical_research import Hierarchy, scenarios
 from .causal_cost_policy import project_order, causal_rollout
 from .progress import Progress
 from .simulator import simulate
 from .verify import independent_simulate
 
 BASELINE=("incumbent",)
-PUBLISHED_OPUS=("diverse",.9,.33800656001887974,.5813428492464154,1.18,1)
+PUBLISHED_OPUS=("diverse",.9,.33800656001887974,.5813428492464154,"opus_bins",1)
 README_OPUS=("pair",.5,.25,.65,1.,1)
 SPECS=[BASELINE,PUBLISHED_OPUS,README_OPUS]+[
     (family,share,seasonal,alpha,multiplier,horizon)
@@ -90,7 +90,9 @@ def prepare(features,origin,progress,done,total):
     for t in range(origin,origin+6):
         cb=np.column_stack([np.maximum(baseline.predict(features.feature(t,h)),0.) for h in (1,2,3)])
         inc.append(.5*features.seasonal(t)+.5*cb)
-    prepared={BASELINE:(np.stack(inc),None)}
+    prepared={BASELINE:(np.stack(inc),None,None)}
+    level=old.mean(features.c[:,:origin])
+    bin_multiplier=np.where(level>np.quantile(level,.75),1.1918987771673257,1.1731901672544072)
     cache={}
     for s in SPECS[1:]:
         family,share,seasonal,alpha,mult,horizon=s
@@ -100,15 +102,15 @@ def prepare(features,origin,progress,done,total):
             sigma=residual_sigma(actual,blend(inner_fc,*key))
             cache[key]=(pred,sigma)
         pred,sigma=cache[key]
-        prepared[s]=(pred,sigma[:,horizon-1])
+        prepared[s]=(pred,sigma[:,horizon-1],bin_multiplier if mult=="opus_bins" else mult)
     return prepared
 
 def orders_for(demand,opening,prepared,spec):
-    fc,sigma=prepared[spec]
+    fc,sigma,mult=prepared[spec]
     if spec==BASELINE:
         lead=fc.sum(axis=2)
         return old.rollout(1.1*lead+.3*np.sqrt(lead),demand,opening)[1]
-    _,_,_,alpha,mult,_=spec
+    _,_,_,alpha,_,_=spec
     z=NormalDist().inv_cdf(alpha)
     def decide(t,oh,a0,a1,history):
         return project_order(oh,a0,a1,fc[t],sigma,z,mult)
@@ -154,6 +156,16 @@ def run(out_dir):
             prepared=prepare(features,o,p,done,total)
             row=evaluate(prepared,y,c,o,selected,p,done,total)
             for s in selected: validation[s].append(row[s])
+        # Test both demand and stock-availability perturbations against every
+        # replay cutoff, not just against a fixed forecast cache.
+        for t in range(157,163):
+            altered=c.copy()
+            altered[:,t:]=np.where(np.isfinite(altered[:,t:]),np.nan,100.)
+            changed=Hierarchy(altered,woy,ds)
+            np.testing.assert_array_equal(features.seasonal(t),changed.seasonal(t))
+            for h in (1,2,3):
+                np.testing.assert_array_equal(features.feature(t,h),changed.feature(t,h))
+                np.testing.assert_array_equal(features.rich(t,h).to_numpy(),changed.rich(t,h).to_numpy())
         prepared=prepare(features,157,p,total-1,total)
         demand=ds.game_sales.T
         opening=[ds.on_hand0,ds.pipe_w1,ds.pipe_w2]
