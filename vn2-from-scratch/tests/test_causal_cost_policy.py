@@ -9,6 +9,10 @@ class CausalCostTests(unittest.TestCase):
         # 3+5-4=4; 4+2-7 -> 0; target=8.
         np.testing.assert_array_equal(project_order(np.array([3.]),np.array([5.]),np.array([2.]),pred,np.array([1.]),0.,1.),[8.])
 
+    def test_multiplier_scales_entire_quantile_target(self):
+        pred=np.array([[4.,7.,8.]])
+        np.testing.assert_array_equal(project_order(np.array([3.]),np.array([5.]),np.array([2.]),pred,np.array([2.]),1.,1.5),[15.])
+
     def test_no_negative_orders(self):
         pred=np.array([[1.,1.,1.]])
         np.testing.assert_array_equal(project_order(np.array([30.]),np.array([0.]),np.array([0.]),pred,np.array([1.]),0.,1.),[0.])
